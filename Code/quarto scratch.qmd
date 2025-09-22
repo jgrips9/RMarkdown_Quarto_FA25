@@ -1,0 +1,34 @@
+---
+title: "Quarto Scratch"
+format: html
+editor: visual
+---
+
+## Introduction
+
+Can format text as if it were a normal word document.
+
+-   bulleted list 1
+
+-   bulleted list 2
+
+1.  numbered list 1
+
+2.  numbered list 2
+
+| Name  | Gender | Age |
+|-------|--------|-----|
+| Jacob | M      | 29  |
+| Al    | F      | 31  |
+
+## Body
+
+Can also do sample code in chunks
+
+```{r, include = TRUE, echo = FALSE}
+mpgavg = mean(mtcars$mpg)
+```
+
+Then can call the results. Average mpg is `{r} mpgavg`
+
+## Conclusion

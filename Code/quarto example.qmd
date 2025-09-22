@@ -1,0 +1,101 @@
+---
+title: "Replication_sample"
+author: "Jacob Grippin"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
+---
+
+## Introdouction
+
+```{r preparations, include=FALSE}
+list.of.packages <- c("ggplot2", "gtsummary", "tidyverse", "kableExtra", "reticulate")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+library(gtsummary)
+library(tidyverse)
+library(kableExtra)
+library(rmarkdown)
+attach(mtcars)
+#Store column names of dataset as an object
+names = colnames(mtcars)
+summary_tab = subset(mtcars, select = c("am", "mpg"))
+#Create a nice looking table. 
+changend <- tbl_summary(summary_tab, by=am)
+#Help documentation for subset command
+#?subset
+#Subset the dataset to compare mpg by automatic and manual cars
+am0 <- subset(mtcars, am == 0)
+am1 <- subset(mtcars, am == 1)
+#Help documentation for t.test command
+#?t.test
+testres <- t.test(am0$mpg, am1$mpg)
+```
+
+This is a short *memo*. Describing the system dataset [mtcars](https://www.rdocumentation.org/packages/datasets/versions/3.6.2/topics/mtcars), showing some visuals, results, and text formatting. Put 2 spaces at end of line for output to go to next line.
+
+Using system dataset "mtcars". Column names of dataset included below.\
+**`r colnames(mtcars)`**
+
+### Variable Descriptions
+
+I am interested in variables for Miles Per Gallon(MPG) split by automatic and manual cars(am). Along with how Miles Per Gallon(MPG) is influenced by the weight of the vehicle.
+
+Variable `r names[1]` has the following overall measure of mean and standard deviation.
+
+-   **mean =** `r mean(mtcars$mpg)`\
+-   **standard deviation** = `r sd(mtcars$mpg)`
+
+Variable `r names[9]` has the following frequency counts and summary statistics in association with Miles per Gallon.\
+`r changend`
+
+### Results
+
+I will display mpg and weight on a scatterplot and t-test results comparing mpg for automatic and manual cars values of 0(automatic) and 1(manual) cars. My null hypothesis comparing automatic and manual cars would be the mpg for both type of vehicle groups are equal. With the alternative hypothesis being that they are not equal.
+
+Below are code and results of the T-test mentioned earlier. My null hypothesis would be the mpg for both automatic and manual cars are equal.
+
+```{r ttest, include=TRUE, echo=TRUE}
+#Commands below to compare avg mpg for vs equal to 0 and equal to 1. 
+am0 <- subset(mtcars, am == 0)
+am1 <- subset(mtcars, am == 1)
+testres <- t.test(am0$mpg, am1$mpg)
+#Print full t.test results
+testres
+```
+
+Above uses code chunk to show code used to create results. Also could do inline code just to show numbers. Inline code will make it appear a bit more organized. Numbers printed are *t statistic* and corresponding *p-value*. `r c(testres$statistic, testres$p.value)`
+
+## Analysis of TTest results
+
+Based on such a low p-value of **`r testres$p.value`** I reject the null hypothesis. The data does not suggest that automatic and manual vehicles have the same mpg showing manual cars having an average mpg of **`r testres$estimate[2]`** and automatic cars displaying **`r testres$estimate[1]`**. The data suggests manual cars have a higher MPG than automatic cars.
+
+## Regression equation Miles Per Gallon and Weight
+
+Performing another result in the form of a correlation matrix and regression equation in the next section. As weight increases, the trend appears to result in a decreased mpg. Below is the correlation of mpg and weight.\
+*`r cor(mtcars$mpg, mtcars$wt)`*.
+
+From the correlation matrix, a linear regression model is an appropriate fit. I will proceed with a regression equation to predict miles per gallon based on weight of the vehicle. Below is the scatterplot with line of best fit. Below that will display the regression results in the form of an equation.
+
+```{r graph, echo=TRUE, include=TRUE, fig.height=6, fig.width=8}
+plot(mtcars$wt, mtcars$mpg, ylab="Miles Per Gallon", xlab="weight in Thousand Pounds", main = "Miles per Gallon of Cars by weight of cars in Sample")
+abline(lm(mpg ~ wt))
+```
+
+```{r regress, echo = FALSE, include = FALSE}
+reg = lm(mpg ~ wt, data = mtcars)
+```
+
+From the regression equation. for every 1 unit increase in our weight variable, we expect the miles per gallon to decrease by 5.3 as shwon below in the equation. Following a linear model, it will have the following equation. With a correlation of *`r cor(mtcars$mpg, mtcars$wt)`* there is a moderately strong linear relationship with a negative slope.\
+**mpg = `r reg$coefficients[1]` + `r reg$coefficients[2]` x weight**
+
+## Helpful Resources
+
+Following links have good reference information:\
+[Rmarkdown Webiste](https://rmarkdown.rstudio.com/) - tutorial rmarkdown\
+[Rmarkdown cheatsheet](https://rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf) - cheatsheet\
+[Rmarkdown code chunk options](https://rstudio.github.io/cheatsheets/html/rmarkdown.html#chunk-options) - List of code chunk options
