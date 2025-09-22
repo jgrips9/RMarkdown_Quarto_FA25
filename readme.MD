@@ -8,4 +8,4 @@
 [RMarkdown Introduction](https://rmarkdown.rstudio.com/lesson-1.html)
 
 
-[RMarkdown cheatsheet](https://rstudio.github.io/cheatsheets/html/rmarkdown.html#chunk-options)
+[RMarkdown cheatsheet/Chunk Options](https://rstudio.github.io/cheatsheets/html/rmarkdown.html#chunk-options)
